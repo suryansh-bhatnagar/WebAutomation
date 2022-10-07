@@ -29,7 +29,7 @@ test.describe("Add sale from home", () => {
       .click();
     await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
 
-    await page.locator("text=Edit").click();
+    await page.locator("//div[text()='Edit']").first().click();
     // Click input
     await page.locator("input").click();
     // Fill input
@@ -81,12 +81,8 @@ test.describe("Add sale from home", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    // await expect(page).toHaveURL("https://dev.medbikri.com/");
     if (quantity != "1") {
-      await page
-        .locator(".css-1dbjc4n > div:nth-child(2) > div")
-        .first()
-        .click();
+      await page.locator("//div[text()='Inventory']").first().click();
       await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
       // await page.locator("div:nth-child(2) > div").first().click();
       await page
@@ -102,7 +98,7 @@ test.describe("Add sale from home", () => {
       await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
       // Click text=Edit
 
-      await page.locator("text=Edit").click();
+      await page.locator("//div[text()='Edit']").first().click();
       // Click input
       await page.locator("input").click();
       // Fill input
@@ -111,6 +107,9 @@ test.describe("Add sale from home", () => {
       ).toString();
       if (parseInt(quantity) - parseInt(newQuantity) == 1) {
         await page.locator("text=Cancel").click();
+        await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+        await page.locator("text=More").click();
+        await page.locator("text=Signout").click();
       } else {
         test.fail(
           true,
@@ -165,11 +164,13 @@ test.describe("Add sale from home", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("Previous customer non-db  manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -223,11 +224,13 @@ test.describe("Add sale from home", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("New customer  inventory autocomplete manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -252,7 +255,7 @@ test.describe("Add sale from home", () => {
     await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
     // Click text=Edit
 
-    await page.locator("text=Edit").click();
+    await page.locator("//div[text()='Edit']").first().click();
     // Click input
     await page.locator("input").click();
     // Fill input
@@ -302,10 +305,7 @@ test.describe("Add sale from home", () => {
 
     // await expect(page).toHaveURL("https://dev.medbikri.com/");
     if (quantity != "1") {
-      await page
-        .locator(".css-1dbjc4n > div:nth-child(2) > div")
-        .first()
-        .click();
+      await page.locator("//div[text()='Inventory']").first().click();
       await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
       // await page.locator("div:nth-child(2) > div").first().click();
       await page
@@ -321,7 +321,7 @@ test.describe("Add sale from home", () => {
       await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
       // Click text=Edit
 
-      await page.locator("text=Edit").click();
+      await page.locator("//div[text()='Edit']").first().click();
       // Click input
       await page.locator("input").click();
       // Fill input
@@ -330,10 +330,13 @@ test.describe("Add sale from home", () => {
       ).toString();
       if (parseInt(quantity) - parseInt(newQuantity) == 1) {
         await page.locator("text=Cancel").click();
+        await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+        await page.locator("text=More").click();
+        await page.locator("text=Signout").click();
       } else {
         test.fail(
           true,
-          "It fails because last sold medicine is not that  medicine whose quantity we decreased"
+          "It fails because quantity of medicine not decrease after adding sale"
         );
       }
     }
@@ -352,20 +355,10 @@ test.describe("Add sale from home", () => {
       .first()
       .click();
     // Click text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]
-    await page
-      .locator(
-        'text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]'
-      )
-      .click(); // Fill text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]
-    await page
-      .locator(
-        'text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]'
-      )
-      .fill("9568741236");
-    // Click input >> nth=3
-    await page.locator("input").nth(3).click();
-    // Fill input >> nth=3
-    await page.locator("input").nth(3).fill("David warn");
+    addCustomer.addNewCustomer(
+      AddCustomerData.newCustomerName,
+      AddCustomerData.newCustomerPhone
+    );
     // Click text=Submit
     await page.locator("text=Submit").click();
     // Click text=Add Medicine
@@ -390,6 +383,10 @@ test.describe("Add sale from home", () => {
     // Click text=Create Sale
     await page.locator("text=Create Sale").click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SaleSuccess");
+
+    await page.locator("text=BACK TO SALES").click();
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("New customer  non-db autocomplete manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -404,24 +401,10 @@ test.describe("Add sale from home", () => {
       .locator(".css-1dbjc4n > div > div:nth-child(2) > div")
       .first()
       .click();
-    // Click text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]
-    await page
-      .locator(
-        'text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]'
-      )
-      .click();
-    // Fill text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]
-    await page
-      .locator(
-        'text=Customer detailsCustomer NameCustomer PhoneCancelSubmit >> input[type="text"]'
-      )
-      .fill("9568741236");
-    // Click input >> nth=3
-    await page.locator("input").nth(3).click();
-    // Fill input >> nth=3
-    await page.locator("input").nth(3).fill("David warn");
-    // Click text=Submit
-    await page.locator("text=Submit").click();
+    addCustomer.addNewCustomer(
+      AddCustomerData.newCustomerName,
+      AddCustomerData.newCustomerPhone
+    );
     // Click text=Add Medicine
     await page.locator("text=Add Medicine").click();
     // Press Tab
@@ -448,7 +431,6 @@ test.describe("Add sale from home", () => {
 
     await page.locator('input[type="text"]').nth(2).fill("ABC123");
 
-  
     // Click text=Submit
     await page.locator("text=Submit").click();
     // Click text=Proceed
@@ -457,6 +439,10 @@ test.describe("Add sale from home", () => {
     // Click text=Create Sale
     await page.locator("text=Create Sale").click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SaleSuccess");
+
+    await page.locator("text=BACK TO SALES").click();
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("No customer  inventory without autocomplete manual", async ({
     page,
@@ -482,8 +468,7 @@ test.describe("Add sale from home", () => {
     await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
     // Click text=Edit
 
-    await page.locator("text=Edit").click();
-    // Click input
+    await page.locator("//div[text()='Edit']").first().click(); // Click input
     await page.locator("input").click();
     // Fill input
     const quantity = (
@@ -526,10 +511,7 @@ test.describe("Add sale from home", () => {
 
     // await expect(page).toHaveURL("https://dev.medbikri.com/");
     if (quantity != "1") {
-      await page
-        .locator(".css-1dbjc4n > div:nth-child(2) > div")
-        .first()
-        .click();
+      await page.locator("//div[text()='Inventory']").first().click();
       await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
       // await page.locator("div:nth-child(2) > div").first().click();
       await page
@@ -545,7 +527,7 @@ test.describe("Add sale from home", () => {
       await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
       // Click text=Edit
 
-      await page.locator("text=Edit").click();
+      await page.locator("//div[text()='Edit']").first().click();
       // Click input
       await page.locator("input").click();
       // Fill input
@@ -554,6 +536,9 @@ test.describe("Add sale from home", () => {
       ).toString();
       if (parseInt(quantity) - parseInt(newQuantity) == 1) {
         await page.locator("text=Cancel").click();
+        await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+        await page.locator("text=More").click();
+        await page.locator("text=Signout").click();
       } else {
         test.fail(
           true,
@@ -594,11 +579,13 @@ test.describe("Add sale from home", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
 
   test("No customer  no inventory no db without autocomplete manual", async ({
@@ -636,7 +623,6 @@ test.describe("Add sale from home", () => {
 
     await page.locator('input[type="text"]').nth(2).fill("ABC123");
 
-  
     await page.locator("//div[text()='Submit']").click();
 
     await page.locator("//div[text()='Proceed']").click();
@@ -647,11 +633,13 @@ test.describe("Add sale from home", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
 });
 
@@ -678,7 +666,7 @@ test.describe("Add sale from fab", () => {
     await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
     // Click text=Edit
 
-    await page.locator("text=Edit").click();
+    await page.locator("//div[text()='Edit']").first().click();
     // Click input
     await page.locator("input").click();
     // Fill input
@@ -691,7 +679,7 @@ test.describe("Add sale from fab", () => {
     // await page.locator("text=Cancel").click();
     await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
     await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -735,12 +723,9 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     if (quantity != "1") {
-      await page
-        .locator(".css-1dbjc4n > div:nth-child(2) > div")
-        .first()
-        .click();
+      await page.locator("//div[text()='Inventory']").first().click();
       await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
       // await page.locator("div:nth-child(2) > div").first().click();
       await page
@@ -756,7 +741,7 @@ test.describe("Add sale from fab", () => {
       await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
       // Click text=Edit
 
-      await page.locator("text=Edit").click();
+      await page.locator("//div[text()='Edit']").first().click();
       // Click input
       await page.locator("input").click();
       // Fill input
@@ -765,6 +750,9 @@ test.describe("Add sale from fab", () => {
       ).toString();
       if (parseInt(quantity) - parseInt(newQuantity) == 1) {
         await page.locator("text=Cancel").click();
+        await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+        await page.locator("text=More").click();
+        await page.locator("text=Signout").click();
       } else {
         test.fail(
           true,
@@ -776,14 +764,13 @@ test.describe("Add sale from fab", () => {
   test("Previous customer non-inventory autocomplete manual", async ({
     page,
   }) => {
-    test.setTimeout(6000000);
     const login = new LoginFunction(page);
     const addCustomer = new AddCustomerFunction(page);
     await login.login(loginCred.phone, loginCred.otp);
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -828,11 +815,13 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("Previous customer non-db  manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -841,7 +830,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -893,11 +882,13 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("New customer  inventory autocomplete manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -921,7 +912,7 @@ test.describe("Add sale from fab", () => {
     await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
     // Click text=Edit
 
-    await page.locator("text=Edit").click();
+    await page.locator("//div[text()='Edit']").first().click();
     // Click input
     await page.locator("input").click();
     // Fill input
@@ -935,7 +926,7 @@ test.describe("Add sale from fab", () => {
     await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
     await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -979,10 +970,7 @@ test.describe("Add sale from fab", () => {
 
     // await expect(page).toHaveURL("https://dev.medbikri.com/");
     if (quantity != "1") {
-      await page
-        .locator(".css-1dbjc4n > div:nth-child(2) > div")
-        .first()
-        .click();
+      await page.locator("//div[text()='Inventory']").first().click();
       await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
       // await page.locator("div:nth-child(2) > div").first().click();
       await page
@@ -998,7 +986,7 @@ test.describe("Add sale from fab", () => {
       await expect(page).toHaveURL("https://dev.medbikri.com/ProductDetails");
       // Click text=Edit
 
-      await page.locator("text=Edit").click();
+      await page.locator("//div[text()='Edit']").first().click();
       // Click input
       await page.locator("input").click();
       // Fill input
@@ -1007,6 +995,9 @@ test.describe("Add sale from fab", () => {
       ).toString();
       if (parseInt(quantity) - parseInt(newQuantity) == 1) {
         await page.locator("text=Cancel").click();
+        await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+        await page.locator("text=More").click();
+        await page.locator("text=Signout").click();
       } else {
         test.fail(
           true,
@@ -1022,7 +1013,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -1083,6 +1074,9 @@ test.describe("Add sale from fab", () => {
     // Click text=Create Sale
     await page.locator("text=Create Sale").click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SaleSuccess");
+    await page.locator("text=BACK TO SALES").click();
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("New customer  non-db autocomplete manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -1091,7 +1085,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -1157,6 +1151,9 @@ test.describe("Add sale from fab", () => {
     // Click text=Create Sale
     await page.locator("text=Create Sale").click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SaleSuccess");
+    await page.locator("text=BACK TO SALES").click();
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("No customer  inventory without autocomplete manual", async ({
     page,
@@ -1167,7 +1164,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -1201,7 +1198,6 @@ test.describe("Add sale from fab", () => {
 
     await page.locator('input[type="text"]').nth(2).fill("ABC123");
 
-   
     await page.locator("//div[text()='Submit']").click();
 
     await page.locator("//div[text()='Proceed']").click();
@@ -1212,11 +1208,13 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("No customer  non inventory autocomplete manual", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -1224,7 +1222,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -1257,11 +1255,13 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+
+    await page.locator("text=Signout").click();
   });
   test("No customer  no inventory no db without autocomplete manual", async ({
     page,
@@ -1271,7 +1271,7 @@ test.describe("Add sale from fab", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
     // Click div:nth-child(2) > div:nth-child(2) > .css-1dbjc4n > svg
     await page
@@ -1305,7 +1305,6 @@ test.describe("Add sale from fab", () => {
 
     await page.locator('input[type="text"]').nth(2).fill("ABC123");
 
- 
     await page.locator("//div[text()='Submit']").click();
 
     await page.locator("//div[text()='Proceed']").click();
@@ -1316,11 +1315,12 @@ test.describe("Add sale from fab", () => {
 
     await page.locator("text=BACK TO SALES").click();
 
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
+    await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
     await page.locator("text=More").click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/MoreTab");
+    await page.locator("text=Signout").click();
   });
 });
 
@@ -1344,7 +1344,7 @@ test.describe("Add sale from Action card", () => {
     await page.locator("text=Cancel").first().click();
 
     await page
-      .locator("//div[text()='Refill Remainder']/following-sibling::div")
+      .locator("//div[text()='Refill Reminder']/following-sibling::div")
       .click();
 
     await page.locator("//input[@inputmode='numeric']").first().click();
@@ -1423,6 +1423,7 @@ test.describe("Add sale from Action card", () => {
           .innerText()
       ).toString()
     );
+
     console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
 
     if (alerts - alertsAfterSale !== 1) {
@@ -1431,6 +1432,8 @@ test.describe("Add sale from Action card", () => {
         "It fails because no. of alerts not decreasing after add sale of refill reminder"
       );
     }
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("Add sale of refill reminder non inventory med", async ({ page }) => {
     const login = new LoginFunction(page);
@@ -1452,7 +1455,7 @@ test.describe("Add sale from Action card", () => {
     await page.locator("text=Cancel").first().click();
 
     await page
-      .locator("//div[text()='Refill Remainder']/following-sibling::div")
+      .locator("//div[text()='Refill Reminder']/following-sibling::div")
       .click();
 
     await page.locator("//input[@inputmode='numeric']").first().click();
@@ -1537,6 +1540,9 @@ test.describe("Add sale from Action card", () => {
         "It fails because no. of alerts not decreasing after add sale of refill reminder"
       );
     }
+
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("Add sale of refill reminder non inventory nor db med", async ({
     page,
@@ -1559,7 +1565,7 @@ test.describe("Add sale from Action card", () => {
     await page.locator("text=Cancel").first().click();
 
     await page
-      .locator("//div[text()='Refill Remainder']/following-sibling::div")
+      .locator("//div[text()='Refill Reminder']/following-sibling::div")
       .click();
 
     await page.locator("//input[@inputmode='numeric']").first().click();
@@ -1589,7 +1595,6 @@ test.describe("Add sale from Action card", () => {
 
     await page.locator('input[type="text"]').nth(2).fill("ABC123");
 
-   
     await page.locator("//div[text()='Submit']").click();
 
     await page.locator("//div[text()='Proceed']").click();
@@ -1657,112 +1662,19 @@ test.describe("Add sale from Action card", () => {
         "It fails because no. of alerts not decreasing after add sale of refill reminder"
       );
     }
+
+    await page.locator("text=More").click();
+    await page.locator("text=Signout").click();
   });
   test("Add sale of expiring card no customer", async ({ page }) => {
-    const login = new LoginFunction(page);
-    await login.login(loginCred.phone, loginCred.otp);
-
-    await expect(page).toHaveURL("https://dev.medbikri.com/");
-
-    await page.locator("//div[text()='New Purchase']").click();
-
-    await page.locator("(//input[@dir='auto'])[1]").type(medForCard);
-
-    await page.locator("(//div[text()='" + medForCard + "'])[1]").click();
-    await page
-      .locator("(//div[text()='Expiry Date']/following::input)[1]")
-      .click();
-    await page.locator("//div[text()='Select']").click();
-    await page.locator("//div[text()='Next']").click();
-    await page.locator("//div[text()='Submit']").click();
-    await new Promise((f) => setTimeout(f, 2000));
-    await page.locator("//div[text()='BACK TO PURCHASES']").click();
-    await page.locator("//div[text()='Home']").click();
-    page.keyboard.press("F5");
-
-    let alerts = parseInt(
-      (
-        await page
-          .locator(
-            "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
-          )
-          .first()
-          .innerText()
-      ).toString()
-    );
-
-    console.log(alerts, "<<<<<Alerts>>>>");
-    await page.locator("div > .overview > div:nth-child(5)").first().click();
-
-    const quantity = (
-      await page
-        .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
-        .first()
-        .innerText()
-    ).toString();
-
-    await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
-    await new Promise((f) => setTimeout(f, 1000));
-    await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
-
-    await page.locator("//div[text()='Submit']").click();
-    await page.locator("//div[text()='Proceed']").click();
-
-    await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
-
-    await page.locator("//div[text()='Create Sale']").click();
-
-    await new Promise((f) => setTimeout(f, 2000));
-    await page.locator("text=BACK TO SALES").click();
-    await page.locator("//div[text()='Home']").click();
-
-    let alertsAfterSale = parseInt(
-      (
-        await page
-          .locator(
-            "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
-          )
-          .first()
-          .innerText()
-      ).toString()
-    );
-    console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
-
-    await page.locator("div > .overview > div:nth-child(5)").first().click();
-    let headerText = (
-      await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
-    ).toString();
-    let medName = await (
-      await page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
-        .innerText()
-    )
-      .toString()
-      .slice(0, 15);
-    console.log(headerText, "****HEADER TEXT *****");
-    console.log(medName, "****MED NAME *****");
-    if (
-      headerText === "Expiring Stock" &&
-      medName !== medForCard.slice(0, 15)
-    ) {
-      test.fail(
-        true,
-        "It fails because expiring card is  still there in alerts section "
-      );
-    } else {
-      page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-1loqt21')])[1]")
-        .click();
-    }
-  });
-  test("Add sale of expiring card to prev customer", async ({ page }) => {
     const login = new LoginFunction(page);
     const addCustomer = new AddCustomerFunction(page);
     await login.login(loginCred.phone, loginCred.otp);
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("//div[text()='New Purchase']").click();
+    await page.locator("//div[text()='Add a Purchase']").click();
+    await page.locator("//div[text()='Add Manually']").click();
 
     await page.locator("(//input[@dir='auto'])[1]").type(medForCard);
 
@@ -1791,92 +1703,100 @@ test.describe("Add sale from Action card", () => {
 
     console.log(alerts, "<<<<<Alerts>>>>");
     await page.locator("div > .overview > div:nth-child(5)").first().click();
-
-    const quantity = (
-      await page
-        .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
-        .first()
-        .innerText()
-    ).toString();
-
-    await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
-    await new Promise((f) => setTimeout(f, 1000));
-    await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
-    await page.locator("text=Submit").click();
-    await new Promise((f) => setTimeout(f, 1000));
-    await page.locator("//div[text()='Add Customer']").click();
-
-    await addCustomer.addPreviousCustomerByName(
-      AddCustomerData.prevCustomerName
-    );
-    await new Promise((f) => setTimeout(f, 1000));
-    await expect(page.locator("text=Cancel").first()).toBeVisible();
-
-    await page.locator("text=Cancel").first().click();
-
-    await page.locator("//div[text()='Submit']").click();
-    await page.locator("//div[text()='Proceed']").click();
-
-    await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
-
-    await page.locator("//div[text()='Create Sale']").click();
-
-    await new Promise((f) => setTimeout(f, 2000));
-    await page.locator("text=BACK TO SALES").click();
-    await page.locator("//div[text()='Home']").click();
-
-    let alertsAfterSale = parseInt(
-      (
-        await page
-          .locator(
-            "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
-          )
-          .first()
-          .innerText()
-      ).toString()
-    );
-    console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
-
-    await page.locator("div > .overview > div:nth-child(5)").first().click();
+    await page.keyboard.press("F5");
+    // await new Promise((f) => setTimeout(f, 3000));
     let headerText = (
       await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
     ).toString();
     let medName = await (
       await page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
+        .locator("(//div[@class='css-901oao r-1enofrn'])[1]")
         .innerText()
     )
       .toString()
       .slice(0, 15);
-    console.log(headerText, "****HEADER TEXT *****");
-    console.log(medName, "****MED NAME *****");
+    console.log("Header Text   ", headerText, "    Med name   ", medName);
 
     if (
       headerText === "Expiring Stock" &&
-      medName !== medForCard.slice(0, 15)
+      medName === medForCard.slice(0, 15)
     ) {
-      test.fail(
-        true,
-        "It fails because expiring card is  still there in alerts section "
+      const quantity = (
+        await page
+          .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
+          .first()
+          .innerText()
+      ).toString();
+
+      await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
+      await new Promise((f) => setTimeout(f, 1000));
+      await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
+      await page.locator("text=Submit").click();
+      await new Promise((f) => setTimeout(f, 1000));
+      await page.locator("//div[text()='Proceed']").click();
+
+      await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
+
+      await page.locator("//div[text()='Create Sale']").click();
+
+      await new Promise((f) => setTimeout(f, 2000));
+      await page.locator("text=BACK TO SALES").click();
+      await page.locator("//div[text()='Home']").click();
+
+      let alertsAfterSale = parseInt(
+        (
+          await page
+            .locator(
+              "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
+            )
+            .first()
+            .innerText()
+        ).toString()
       );
+      console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
+
+      await page.locator("div > .overview > div:nth-child(5)").first().click();
+      headerText = (
+        await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
+      ).toString();
+      medName = (
+        await page
+          .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
+          .innerText()
+      )
+        .toString()
+        .slice(0, 15);
+      console.log(headerText, "****HEADER TEXT *****");
+      console.log(medName, "****MED NAME *****");
+
+      if (
+        headerText === "Expiring Stock" &&
+        medName === medForCard.slice(0, 15)
+      ) {
+        test.fail(
+          true,
+          "It fails because expiring card is  still there in alerts section "
+        );
+      }
+
+      await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+      await page.locator("text=More").click();
+      await page.locator("text=Signout").click();
     } else {
-      page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-1loqt21')])[1]")
-        .click();
+      test.fail(true, "Action card not added in alerts");
     }
   });
-  test("Add sale of expiring card to new customer", async ({ page }) => {
+  test("Add sale of expiring card to prev customer", async ({ page }) => {
     const login = new LoginFunction(page);
     const addCustomer = new AddCustomerFunction(page);
     await login.login(loginCred.phone, loginCred.otp);
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator("//div[text()='New Purchase']").click();
+    await page.locator("//div[text()='Add a Purchase']").click();
+    await page.locator("//div[text()='Add Manually']").click();
 
-    await page
-      .locator("(//input[@dir='auto'])[1]")
-      .type(medForCard, { delay: 100 });
+    await page.locator("(//input[@dir='auto'])[1]").type(medForCard);
 
     await page.locator("(//div[text()='" + medForCard + "'])[1]").click();
     await page
@@ -1888,7 +1808,7 @@ test.describe("Add sale from Action card", () => {
     await new Promise((f) => setTimeout(f, 2000));
     await page.locator("//div[text()='BACK TO PURCHASES']").click();
     await page.locator("//div[text()='Home']").click();
-    page.keyboard.press("F5");
+    await page.keyboard.press("F5");
 
     let alerts = parseInt(
       (
@@ -1903,36 +1823,124 @@ test.describe("Add sale from Action card", () => {
 
     console.log(alerts, "<<<<<Alerts>>>>");
     await page.locator("div > .overview > div:nth-child(5)").first().click();
-
-    const quantity = (
-      await page
-        .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
-        .first()
-        .innerText()
+    await page.keyboard.press("F5");
+    // await new Promise((f) => setTimeout(f, 3000));
+    let headerText = (
+      await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
     ).toString();
+    let medName = await (
+      await page
+        .locator("(//div[@class='css-901oao r-1enofrn'])[1]")
+        .innerText()
+    )
+      .toString()
+      .slice(0, 15);
+    console.log("Header Text   ", headerText, "    Med name   ", medName);
 
-    await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
-    await new Promise((f) => setTimeout(f, 1000));
-    await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
+    if (
+      headerText === "Expiring Stock" &&
+      medName === medForCard.slice(0, 15)
+    ) {
+      const quantity = (
+        await page
+          .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
+          .first()
+          .innerText()
+      ).toString();
+
+      await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
+      await new Promise((f) => setTimeout(f, 1000));
+      await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
+      await page.locator("text=Submit").click();
+      await new Promise((f) => setTimeout(f, 1000));
+
+      await page.locator("//div[text()='Add Customer']").click();
+
+      await addCustomer.addPreviousCustomerByName(
+        AddCustomerData.prevCustomerName
+      );
+      await new Promise((f) => setTimeout(f, 1000));
+      await expect(page.locator("text=Cancel").first()).toBeVisible();
+
+      await page.locator("text=Cancel").first().click();
+      await page.locator("//div[text()='Proceed']").click();
+
+      await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
+
+      await page.locator("//div[text()='Create Sale']").click();
+
+      await new Promise((f) => setTimeout(f, 2000));
+      await page.locator("text=BACK TO SALES").click();
+      await page.locator("//div[text()='Home']").click();
+
+      let alertsAfterSale = parseInt(
+        (
+          await page
+            .locator(
+              "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
+            )
+            .first()
+            .innerText()
+        ).toString()
+      );
+      console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
+
+      await page.locator("div > .overview > div:nth-child(5)").first().click();
+      headerText = (
+        await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
+      ).toString();
+      medName = (
+        await page
+          .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
+          .innerText()
+      )
+        .toString()
+        .slice(0, 15);
+      console.log(headerText, "****HEADER TEXT *****");
+      console.log(medName, "****MED NAME *****");
+
+      if (
+        headerText === "Expiring Stock" &&
+        medName === medForCard.slice(0, 15)
+      ) {
+        test.fail(
+          true,
+          "It fails because expiring card is  still there in alerts section "
+        );
+      }
+
+      await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+      await page.locator("text=More").click();
+      await page.locator("text=Signout").click();
+    } else {
+      test.fail(true, "Action card not added in alerts");
+    }
+  });
+  test("Add sale of expiring card to new customer", async ({ page }) => {
+    const login = new LoginFunction(page);
+    const addCustomer = new AddCustomerFunction(page);
+    await login.login(loginCred.phone, loginCred.otp);
+
+    await expect(page).toHaveURL("https://dev.medbikri.com/");
+
+    await page.locator("//div[text()='Add a Purchase']").click();
+    await page.locator("//div[text()='Add Manually']").click();
+
+    await page.locator("(//input[@dir='auto'])[1]").type(medForCard);
+
+    await page.locator("(//div[text()='" + medForCard + "'])[1]").click();
+    await page
+      .locator("(//div[text()='Expiry Date']/following::input)[1]")
+      .click();
+    await page.locator("//div[text()='Select']").click();
+    await page.locator("//div[text()='Next']").click();
     await page.locator("//div[text()='Submit']").click();
-    await page.locator("//div[text()='Add Customer']").click();
-
-    await addCustomer.addNewCustomer(
-      AddCustomerData.newCustomerName,
-      AddCustomerData.newCustomerPhone
-    );
-
-    await page.locator("//div[text()='Proceed']").click();
-
-    await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
-
-    await page.locator("//div[text()='Create Sale']").click();
-
-    await new Promise((f) => setTimeout(f, 1000));
-    await page.locator("text=BACK TO SALES").click();
+    await new Promise((f) => setTimeout(f, 2000));
+    await page.locator("//div[text()='BACK TO PURCHASES']").click();
     await page.locator("//div[text()='Home']").click();
+    await page.keyboard.press("F5");
 
-    let alertsAfterSale = parseInt(
+    let alerts = parseInt(
       (
         await page
           .locator(
@@ -1942,33 +1950,101 @@ test.describe("Add sale from Action card", () => {
           .innerText()
       ).toString()
     );
-    console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
 
+    console.log(alerts, "<<<<<Alerts>>>>");
     await page.locator("div > .overview > div:nth-child(5)").first().click();
+    await page.keyboard.press("F5");
+    // await new Promise((f) => setTimeout(f, 3000));
     let headerText = (
       await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
     ).toString();
     let medName = await (
       await page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
+        .locator("(//div[@class='css-901oao r-1enofrn'])[1]")
         .innerText()
     )
       .toString()
       .slice(0, 15);
-    console.log(headerText, "****HEADER TEXT *****");
-    console.log(medName, "****MED NAME *****");
+    console.log("Header Text   ", headerText, "    Med name   ", medName);
+
     if (
       headerText === "Expiring Stock" &&
-      medName !== medForCard.slice(0, 15)
+      medName === medForCard.slice(0, 15)
     ) {
-      test.fail(
-        true,
-        "It fails because expiring card is  still there in alerts section "
+      const quantity = (
+        await page
+          .locator("(//div[text()='Quantity']/following-sibling::div)[2]")
+          .first()
+          .innerText()
+      ).toString();
+
+      await page.locator("(//div[text()='ADD SALE'])[1]").first().click();
+      await new Promise((f) => setTimeout(f, 1000));
+      await page.locator("(//input[@inputmode='numeric'])[3]").fill(quantity);
+      await page.locator("text=Submit").click();
+      await new Promise((f) => setTimeout(f, 1000));
+
+      await page.locator("//div[text()='Add Customer']").click();
+
+      await addCustomer.addNewCustomer(
+        AddCustomerData.newCustomerName,
+        AddCustomerData.newCustomerPhone
       );
+      await new Promise((f) => setTimeout(f, 1000));
+      await expect(page.locator("text=Cancel").first()).toBeVisible();
+
+      await page.locator("text=Cancel").first().click();
+      await page.locator("//div[text()='Proceed']").click();
+
+      await expect(page).toHaveURL("https://dev.medbikri.com/OptionalSaleData");
+
+      await page.locator("//div[text()='Create Sale']").click();
+
+      await new Promise((f) => setTimeout(f, 2000));
+      await page.locator("text=BACK TO SALES").click();
+      await page.locator("//div[text()='Home']").click();
+
+      let alertsAfterSale = parseInt(
+        (
+          await page
+            .locator(
+              "div > .overview > div:nth-child(5) > div >div >div > div:nth-child(2)"
+            )
+            .first()
+            .innerText()
+        ).toString()
+      );
+      console.log(alertsAfterSale, "<<<<<AlertsAfterSale>>>>");
+
+      await page.locator("div > .overview > div:nth-child(5)").first().click();
+      headerText = (
+        await page.locator("(//div[@class='css-1dbjc4n'])[3]").innerText()
+      ).toString();
+      medName = (
+        await page
+          .locator("(//div[contains(@class,'css-1dbjc4n r-18u37iz')])[1]")
+          .innerText()
+      )
+        .toString()
+        .slice(0, 15);
+      console.log(headerText, "****HEADER TEXT *****");
+      console.log(medName, "****MED NAME *****");
+
+      if (
+        headerText === "Expiring Stock" &&
+        medName === medForCard.slice(0, 15)
+      ) {
+        test.fail(
+          true,
+          "It fails because expiring card is  still there in alerts section "
+        );
+      }
+
+      await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+      await page.locator("text=More").click();
+      await page.locator("text=Signout").click();
     } else {
-      page
-        .locator("(//div[contains(@class,'css-1dbjc4n r-1loqt21')])[1]")
-        .click();
+      test.fail(true, "Action card not added in alerts");
     }
   });
 });
@@ -1980,8 +2056,7 @@ test.describe("Add sale from Inventory", () => {
 
     await expect(page).toHaveURL("https://dev.medbikri.com/");
 
-    await page.locator(".css-1dbjc4n > div:nth-child(2) > div").first().click();
-
+    await page.locator("//div[text()='Inventory']").first().click();
     await expect(page).toHaveURL("https://dev.medbikri.com/InventoryTab");
     // await page.locator("div:nth-child(2) > div").first().click();
     await page
@@ -1996,7 +2071,7 @@ test.describe("Add sale from Inventory", () => {
     )?.toString();
 
     console.log("****Medicine name****", medicineName);
-    await page.locator("text=Edit").click();
+    await page.locator("//div[text()='Edit']").first().click();
 
     // Click input
     await page.locator("input").click();
@@ -2020,7 +2095,7 @@ test.describe("Add sale from Inventory", () => {
     // await page.locator("text=Cancel").click();
     await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
 
-    await page.locator("div:nth-child(3) > div").first().click();
+    await page.locator("//div[text()='Sales']").first().click();
 
     await expect(page).toHaveURL("https://dev.medbikri.com/SalesTab");
 
@@ -2040,6 +2115,9 @@ test.describe("Add sale from Inventory", () => {
 
     if (lastSoldMedicine === medicineName) {
       page.locator("//div[text()='Cancel']").click();
+      await page.locator("div.css-1dbjc4n.r-1loqt21").first().click();
+      await page.locator("text=More").click();
+      await page.locator("text=Signout").click();
     } else {
       test.fail(
         true,
