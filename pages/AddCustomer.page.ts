@@ -1,4 +1,3 @@
-// playwright-dev-page.ts
 import { expect, Page } from "@playwright/test";
 
 export class AddCustomerFunction {
@@ -31,33 +30,22 @@ export class AddCustomerFunction {
 
   public addPreviousCustomerByPhone = async (phone: string) => {
     await this.enterPhone(phone);
+
     await this.page.locator("text=" + phone + "").click();
 
     await (await this.eleSubmit()).click();
-
-    // await (await this.eleSubmit()).click();
-
-    // await new Promise((f) => setTimeout(f, 2000));
   };
   public addPreviousCustomerByName = async (name: string) => {
     await this.enterName(name);
     await this.page.locator("text=" + name + "").click();
 
     await (await this.eleSubmit()).click();
-
-    // await (await this.eleSubmit()).click();
-
-    // await new Promise((f) => setTimeout(f, 2000));
   };
   public addNewCustomer = async (name: string, phone: string) => {
     await this.enterName(name);
+
     await this.enterPhone(phone);
-    // await this.page.locator("text=" + name + "").click();
 
     await (await this.eleSubmit()).click();
-
-    // await (await this.eleSubmit()).click();
-
-    // await new Promise((f) => setTimeout(f, 2000));
   };
 }
